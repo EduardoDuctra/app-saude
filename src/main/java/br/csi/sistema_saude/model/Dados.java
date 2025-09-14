@@ -1,6 +1,7 @@
 package br.csi.sistema_saude.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,18 +23,25 @@ public class Dados {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cod_dado")
     private int codDado;
+
     @UuidGenerator
     private UUID uuid_dado;
+
     @Column(name = "peso")
     private double peso;
+
     @Column(name = "glicose")
     private int glicose;
+
     @Column(name = "colesterol_hdl")
     private int colesterolHDL;
+
     @Column(name = "colesterol_vldl")
     private int colesterolVLDL;
+
     @Column(name = "creatina")
     private int creatina;
+
     @Column(name = "trigliceridio")
     private int trigliceridio;
 

@@ -22,6 +22,7 @@ public class Usuario {
     @Column(name = "cod_usuario")
     private int codUsuario;
     @UuidGenerator
+
     private UUID uuidUsuario;
 
     @Embedded

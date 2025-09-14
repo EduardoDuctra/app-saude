@@ -1,6 +1,7 @@
 package br.csi.sistema_saude.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,14 +23,20 @@ public class Medicamento {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cod_medicamento")
     private int codMedicamento;
+
     @UuidGenerator
     private UUID uuidMedicamento;
+
     @Column(name = "nome_medicamento")
+    @NotBlank
     private String nomeMedicamento;
+
     @Column(name = "duracao_tratamento")
     private int duracaoTratamento;
+
     @Column(name = "data_inicio")
     private LocalDate dataInicio;
+
     @Column(name = "dose_diaria")
     private int doseDiaria;
 

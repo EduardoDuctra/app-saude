@@ -3,10 +3,15 @@ package br.csi.sistema_saude.controller;
 
 import br.csi.sistema_saude.model.Dados;
 import br.csi.sistema_saude.model.Medicamento;
+import br.csi.sistema_saude.model.Usuario;
 import br.csi.sistema_saude.service.MedicamentoService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/medicamentos")
@@ -18,34 +23,48 @@ public class MedicamentoController {
     }
 
     @GetMapping("/listar-medicamentos")
-    public List<Medicamento> listarTodosMedicamentod() {
-        return medicamentoService.buscarMedicamentos();
+    public ResponseEntity<List<Medicamento>> listarTodosMedicamentod() {
+        List <Medicamento> medicamentos = medicamentoService.buscarMedicamentos();
+        if (medicamentos.isEmpty()) {
+            throw new NoSuchElementException();
+        }
+        return ResponseEntity.ok(medicamentos); //200 OK
     }
 
     @GetMapping("/{codMedicamento}")
-    public Medicamento buscarMedicamento(@PathVariable Integer codMedicamento) {
-        return this.medicamentoService.buscarMedicamento(codMedicamento);
+    public ResponseEntity <Medicamento> buscarMedicamento(@PathVariable Integer codMedicamento) {
+
+        Medicamento medicamento = medicamentoService.buscarMedicamento(codMedicamento);
+        if (medicamento == null) {
+            throw new NoSuchElementException(); //chama o metodo NoSuchElementException da classe Tratador de Error
+        }
+        return ResponseEntity.ok(medicamento); // 200
 
     }
 
     @GetMapping("/buscar-por-usuario/{codUsuario}")
-    public List<Medicamento> buscarMedicamentosUsuario(@PathVariable Integer codUsuario) {
-        return this.medicamentoService.buscarMedicamentoUsuario(codUsuario);
+    public ResponseEntity<List<Medicamento>> buscarMedicamentosUsuario(@PathVariable Integer codUsuario) {
+        List <Medicamento> medicamentos = this.medicamentoService.buscarMedicamentoUsuario(codUsuario);
+        return ResponseEntity.ok(medicamentos);
     }
 
     @PostMapping("/salvar")
-    public void salvarMedicamento(@RequestBody Medicamento medicamento) {
+    public ResponseEntity salvarMedicamento(@RequestBody Medicamento medicamento, UriComponentsBuilder uriBuilder) {
         this.medicamentoService.salvarMedicamento(medicamento);
+        URI uri = uriBuilder.path("/medicamentos/{id}").buildAndExpand(medicamento.getCodMedicamento()).toUri();
+        return ResponseEntity.created(uri).body(medicamento);
     }
 
     @PutMapping("/atualizar")
-    public void atualizarMedicamento(@RequestBody Medicamento medicamento) {
+    public ResponseEntity atualizarMedicamento(@RequestBody Medicamento medicamento) {
         this.medicamentoService.atualizarMedicamento(medicamento);
+        return ResponseEntity.ok(medicamento);
     }
 
     @DeleteMapping("/deletar/{codMedicamento}")
-    public void excluirMedicamento(@PathVariable Integer codMedicamento) {
+    public ResponseEntity excluirMedicamento(@PathVariable Integer codMedicamento) {
         this.medicamentoService.excluirMedicamento(codMedicamento);
+        return ResponseEntity.noContent().build();
     }
 
 
