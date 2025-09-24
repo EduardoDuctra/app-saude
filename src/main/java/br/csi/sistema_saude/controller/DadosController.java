@@ -38,12 +38,12 @@ public class DadosController {
         return ResponseEntity.ok(dados); //200
     }
 
-    @GetMapping("/buscar-por-usuario/{uuidUsuario}")
+    @GetMapping("/buscar-por-usuario/{codUsuario}")
     public ResponseEntity<List<Dados>> buscarDadosUsuario(@PathVariable Integer codUsuario) {
         List<Dados> dados = this.dadosService.buscarDadosUsuario(codUsuario);
 
         if (dados.isEmpty()) {
-            throw new NoSuchElementException(); //chama o metodo NoSuchElementException da classe Tratador de Error
+            throw new NoSuchElementException("Usuário não encontrado"); //chama o metodo NoSuchElementException da classe Tratador de Error
         }
         return ResponseEntity.ok(dados); // 200 OK
     }
