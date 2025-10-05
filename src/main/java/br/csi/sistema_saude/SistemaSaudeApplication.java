@@ -6,6 +6,8 @@ import br.csi.sistema_saude.repository.MedicamentoRepository;
 import br.csi.sistema_saude.repository.RelatorioRepository;
 import br.csi.sistema_saude.repository.UsuarioRepository;
 import br.csi.sistema_saude.service.UsuarioService;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.info.Info;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -13,7 +15,13 @@ import org.springframework.context.annotation.Bean;
 
 import java.time.LocalDate;
 import java.util.List;
-
+@OpenAPIDefinition(
+       info = @Info(
+               title = "Sistema de controle saúde",
+               version = "1.0",
+               description = "Documentação da API"
+       )
+)
 @SpringBootApplication
 public class SistemaSaudeApplication {
 
@@ -44,7 +52,7 @@ public class SistemaSaudeApplication {
 
                 UsuarioPerfil usuarioPerfil1 = new UsuarioPerfil();
                 usuarioPerfil1.setNome("Usuario 1");
-                usuarioPerfil1.setSexo('M');
+                usuarioPerfil1.setSexo(Sexo.M);
                 usuarioPerfil1.setAltura(1.73);
 
                 usuario1.setConta(usuarioConta1);

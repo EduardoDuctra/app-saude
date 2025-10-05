@@ -1,5 +1,6 @@
 package br.csi.sistema_saude.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -16,15 +17,19 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema(description = "Entidade que representa um objeto do Tipo UsuarioConta (email e senha)")
+
 public class UsuarioConta {
 
     @Column(name = "email")
     @NotBlank
     @Email (message = "Email inválido")
+    @Schema(description = "Email do usuário. Exemplo: usuario@email.com. Não pode ser nulo")
     private String email;
 
     @Column(name = "senha")
     @NotBlank
+    @Schema(description = "Senha do usuário. Não pode ser nulo")
     private String senha;
 
     public String getEmail() {

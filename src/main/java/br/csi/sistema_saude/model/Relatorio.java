@@ -1,5 +1,6 @@
 package br.csi.sistema_saude.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,19 +16,24 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema(description = "Entidade que representa um relatório")
+
 public class Relatorio {
 
     @EmbeddedId
+    @Schema(description = "Chave primária. Recebe um objeto do tipo RelatorioId")
     private RelatorioId id;
 
     @ManyToOne
     @MapsId("codUsuario")
     @JoinColumn(name = "cod_usuario")
+    @Schema(description = "Objeto Usuário")
     private Usuario usuario;
 
     @ManyToOne
     @MapsId("codDado")
     @JoinColumn(name = "cod_dado")
+    @Schema(description = "Objeto Dados")
     private Dados dados;
 
     public RelatorioId getId() {

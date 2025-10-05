@@ -1,5 +1,6 @@
 package br.csi.sistema_saude.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Embeddable;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,6 +12,8 @@ import java.util.Objects;
 @Getter
 @Setter
 @Embeddable
+@Schema(description = "Entidade que faz a chave primária do relatório")
+
 public class RelatorioId implements Serializable {
     private int codUsuario;
     private int codDado;

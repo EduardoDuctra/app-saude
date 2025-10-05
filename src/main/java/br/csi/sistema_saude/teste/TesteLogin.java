@@ -1,5 +1,6 @@
 package br.csi.sistema_saude.teste;
 
+import br.csi.sistema_saude.model.Sexo;
 import br.csi.sistema_saude.model.Usuario;
 import br.csi.sistema_saude.model.UsuarioConta;
 import br.csi.sistema_saude.model.UsuarioPerfil;
@@ -23,7 +24,7 @@ public class TesteLogin {
         u1.setConta(conta1);
         UsuarioPerfil perfil1 = new UsuarioPerfil();
         perfil1.setNome("Usuario Teste");
-        perfil1.setSexo('M');
+        perfil1.setSexo(Sexo.M);
         perfil1.setAltura(1.75);
         u1.setPerfil(perfil1);
         usuarios.add(u1);

@@ -1,9 +1,16 @@
 package br.csi.sistema_saude.controller;
 
+import br.csi.sistema_saude.model.Dados;
 import br.csi.sistema_saude.model.Relatorio;
 import br.csi.sistema_saude.model.RelatorioId;
 import br.csi.sistema_saude.model.Usuario;
 import br.csi.sistema_saude.service.RelatorioService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -18,6 +25,7 @@ import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/relatorios")
+@Tag(name = "Relatórios", description = "Path relacionado aos relatórios")
 public class RelatorioController {
 
     private final RelatorioService relatorioService;
@@ -29,6 +37,12 @@ public class RelatorioController {
     // Salvar um relatório
     @PostMapping("/salvar")
     @Transactional
+    @Operation(summary = "Criar um relatório", description = "Cria um relatório")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Relatório salvo com sucesso",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Dados.class))),
+            @ApiResponse(responseCode = "400", description = "Erro ao salvar relatório", content = @Content)
+    })
     public ResponseEntity salvarRelatorio(@RequestBody @Valid Relatorio relatorio, UriComponentsBuilder uriBuilder) {
         relatorioService.salvarRelatorio(relatorio);
         URI uri = uriBuilder
@@ -42,6 +56,12 @@ public class RelatorioController {
 
     // Listar todos os relatórios
     @GetMapping("listar-relatorios")
+    @Operation(summary = "Listar todos os relatórios", description = "Lista todos os relatórios")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Relatórios retornados com sucesso",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Dados.class))),
+            @ApiResponse(responseCode = "400", description = "Erro ao retornar relatórios", content = @Content)
+    })
     public ResponseEntity<List<Relatorio>> listarRelatorios() {
         List<Relatorio> relatorios = relatorioService.listarRelatorios();
         if (relatorios.isEmpty()) {
@@ -52,6 +72,12 @@ public class RelatorioController {
 
     // Buscar um relatório pelo ID composto
     @GetMapping("/{codUsuario}/{codDado}/{data}")
+    @Operation(summary = "Retornar um relatório com base na chave primária", description = "Retorna um relatório com base na chave primária (código do usuário + código do dado + data")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Relatório retornado com sucesso",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Dados.class))),
+            @ApiResponse(responseCode = "400", description = "Erro ao retornar relatório", content = @Content)
+    })
     public ResponseEntity<Relatorio> buscarRelatorio(
             @PathVariable int codUsuario,
             @PathVariable int codDado,
@@ -67,21 +93,16 @@ public class RelatorioController {
         return ResponseEntity.ok(relatorio); //  200
     }
 
-    // Excluir um relatório pelo ID composto
-    @DeleteMapping("/{codUsuario}/{codDado}/{data}")
-    public ResponseEntity excluirRelatorio(
-            @PathVariable int codUsuario,
-            @PathVariable int codDado,
-            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data
-    ) {
-        RelatorioId id = new RelatorioId(codUsuario, codDado, data);
-        relatorioService.excluirRelatorio(id);
-        return ResponseEntity.noContent().build(); //204 sem conteudo
-    }
 
     // Listar relatorio de um tipo de dado especifico
     //http://localhost:8080/sistema-saude/relatorios/listar-por-tipo?codUsuario=2&tipoDado=glicose
     @GetMapping("/listar-por-tipo")
+    @Operation(summary = "Listar os dados por tipo", description = "Lista os dados por tipo. Exemplo: todos os dados de Glicose")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Relatório retornado com sucesso",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Dados.class))),
+            @ApiResponse(responseCode = "400", description = "Erro ao retornar relatório", content = @Content)
+    })
     public ResponseEntity<List<Double>> listarTipoDado(
             @RequestParam int codUsuario,
             @RequestParam String tipoDado) {
@@ -93,4 +114,24 @@ public class RelatorioController {
         }
         return ResponseEntity.ok(valores); //200
     }
+
+
+    // Excluir um relatório pelo ID composto
+    @DeleteMapping("/{codUsuario}/{codDado}/{data}")
+    @Operation(summary = "Deletar um relatório com base na chave primária", description = "Deleta um relatório com base na chave primária (código do usuário + código do dado + data")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Relatório deletato com sucesso",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Dados.class))),
+            @ApiResponse(responseCode = "400", description = "Erro ao deletar relatório", content = @Content)
+    })
+    public ResponseEntity excluirRelatorio(
+            @PathVariable int codUsuario,
+            @PathVariable int codDado,
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data
+    ) {
+        RelatorioId id = new RelatorioId(codUsuario, codDado, data);
+        relatorioService.excluirRelatorio(id);
+        return ResponseEntity.noContent().build(); //204 sem conteudo
+    }
+
 }

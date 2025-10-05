@@ -3,6 +3,12 @@ package br.csi.sistema_saude.controller;
 import br.csi.sistema_saude.model.Dados;
 import br.csi.sistema_saude.model.Usuario;
 import br.csi.sistema_saude.service.DadosService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -13,6 +19,7 @@ import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/dados")
+@Tag(name = "Dados", description = "Path relacionado aos dados")
 public class DadosController {
     private DadosService dadosService;
 
@@ -21,6 +28,12 @@ public class DadosController {
     }
 
     @GetMapping("/listar-dados")
+    @Operation(summary = "Listar todos os dados", description = "Lista todos os dados")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Dados listados com sucesso",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = Dados.class))),
+            @ApiResponse(responseCode = "400", description = "Dados invalidos", content = @Content)
+    })
     public ResponseEntity<List<Dados>> listarTodosDados() {
         List<Dados> dados = dadosService.listarDados();
         if (dados.isEmpty()) {
@@ -30,6 +43,12 @@ public class DadosController {
     }
 
     @GetMapping("/{codDado}")
+    @Operation(summary = "Buscar dados a partir do seu código", description = "Busca dados a partir do seu código")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Dado retornado com sucesso",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Dados.class))),
+            @ApiResponse(responseCode = "400", description = "Dado invalido", content = @Content)
+    })
     public ResponseEntity<Dados> buscarDado(@PathVariable Integer codDado) {
         Dados dados = this.dadosService.buscarDados(codDado);
         if(dados == null) {
@@ -39,6 +58,12 @@ public class DadosController {
     }
 
     @GetMapping("/buscar-por-usuario/{codUsuario}")
+    @Operation(summary = "Busca todos os dados a partir do código do usuário", description = "Busca todos os dados a partir do código do usuário")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Dados retornados com sucesso",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Dados.class))),
+            @ApiResponse(responseCode = "400", description = "Dados invalidos", content = @Content)
+    })
     public ResponseEntity<List<Dados>> buscarDadosUsuario(@PathVariable Integer codUsuario) {
         List<Dados> dados = this.dadosService.buscarDadosUsuario(codUsuario);
 
@@ -49,6 +74,12 @@ public class DadosController {
     }
 
     @PostMapping("/salvar")
+    @Operation(summary = "Criar um novo dado", description = "Cria um novo dado")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Dado salvo com sucesso",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Dados.class))),
+            @ApiResponse(responseCode = "400", description = "Erro ao salvar", content = @Content)
+    })
     public ResponseEntity salvarDados(@RequestBody Dados dados, UriComponentsBuilder uriBuilder) {
         this.dadosService.salvarDados(dados);
         URI uri = uriBuilder.path("/dados/{codDado}").buildAndExpand(dados.getCodDado()).toUri();
@@ -56,12 +87,24 @@ public class DadosController {
     }
 
     @PutMapping("/atualizar")
+    @Operation(summary = "Atualizar um dado existente", description = "Atualiza um dado existente")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Dado atualizado com sucesso",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Dados.class))),
+            @ApiResponse(responseCode = "400", description = "Erro ao atualizar", content = @Content)
+    })
     public ResponseEntity atualizarDados(@RequestBody Dados dados) {
         this.dadosService.atualizarDados(dados);
         return ResponseEntity.ok(dados);
     }
 
     @DeleteMapping("/deletar/{codDado}")
+    @Operation(summary = "Deletar um dado existente", description = "Deleta um dado existente")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Dado deletado com sucesso",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Dados.class))),
+            @ApiResponse(responseCode = "400", description = "Erro ao deletar", content = @Content)
+    })
     public ResponseEntity excluirDados(@PathVariable Integer codDado) {
         this.dadosService.excluirDados(codDado);
         return ResponseEntity.noContent().build();

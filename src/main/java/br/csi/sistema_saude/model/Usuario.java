@@ -1,5 +1,6 @@
 package br.csi.sistema_saude.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,19 +16,26 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema(description = "Entidade que representa um Usuário")
+
 public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cod_usuario")
+    @Schema(description = "ID do usuário")
     private int codUsuario;
-    @UuidGenerator
 
+    @UuidGenerator
+    @Schema(description = "UUID do usuário")
     private UUID uuidUsuario;
 
     @Embedded
+    @Schema(description = "Objeto que representa a conta do usuário. Recebe UsuarioConta")
     private UsuarioConta conta;
+
     @Embedded
+    @Schema(description = "Objeto que representa a perfil do usuário. Recebe UsuarioPerfil")
     private UsuarioPerfil perfil;
 
     public int getCodUsuario() {

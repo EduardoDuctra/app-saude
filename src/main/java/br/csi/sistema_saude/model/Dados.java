@@ -1,11 +1,9 @@
 package br.csi.sistema_saude.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.util.UUID;
@@ -16,37 +14,49 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
+@Schema(description = "Entidade que representa um dados")
 
 public class Dados {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cod_dado")
+    @Schema(description = "ID do dado")
     private int codDado;
 
     @UuidGenerator
+    @Schema(description = "UUID do dado")
     private UUID uuid_dado;
 
     @Column(name = "peso")
-    private double peso;
+    @Schema(nullable = true,  description = "Peso do usuário em KG. Exemplo: 65.5kg Pode ser nulo se não informado")
+    private Double peso;
 
     @Column(name = "glicose")
-    private int glicose;
+    @Schema(nullable = true, description = "Glicose do usuário. Exemplo: 98. Pode ser nulo se não informado")
+    private Integer glicose;
 
     @Column(name = "colesterol_hdl")
-    private int colesterolHDL;
+    @Schema(nullable = true, description = "Colesterol HDL do usuário. Exemplo: 55. Pode ser nulo se não informado")
+    private Integer colesterolHDL;
 
     @Column(name = "colesterol_vldl")
-    private int colesterolVLDL;
+    @Schema(nullable = true, description = "Colesterol VLDL do usuário. Exemplo: 18. Pode ser nulo se não informado")
+    private Integer colesterolVLDL;
 
     @Column(name = "creatina")
-    private int creatina;
+    @Schema(nullable = true, description = "Creatina do usuário. Exemplo: 2. Pode ser nulo se não informado")
+    private Integer creatina;
 
     @Column(name = "trigliceridio")
-    private int trigliceridio;
+    @Schema(nullable = true, description = "Trigicerídios do usuário. Exemplo: 140. Pode ser nulo se não informado")
+    private Integer trigliceridio;
 
     @ManyToOne
     @JoinColumn(name = "cod_usuario")
+    @Schema(description = "Objeto Usuário")
+
     private Usuario usuario;
 
     public int getCodDado() {
@@ -65,51 +75,51 @@ public class Dados {
         this.uuid_dado = uuid_dado;
     }
 
-    public double getPeso() {
+    public Double getPeso() {
         return peso;
     }
 
-    public void setPeso(double peso) {
+    public void setPeso(Double peso) {
         this.peso = peso;
     }
 
-    public int getGlicose() {
+    public Integer getGlicose() {
         return glicose;
     }
 
-    public void setGlicose(int glicose) {
+    public void setGlicose(Integer glicose) {
         this.glicose = glicose;
     }
 
-    public int getColesterolHDL() {
+    public Integer getColesterolHDL() {
         return colesterolHDL;
     }
 
-    public void setColesterolHDL(int colesterolHDL) {
+    public void setColesterolHDL(Integer colesterolHDL) {
         this.colesterolHDL = colesterolHDL;
     }
 
-    public int getColesterolVLDL() {
+    public Integer getColesterolVLDL() {
         return colesterolVLDL;
     }
 
-    public void setColesterolVLDL(int colesterolVLDL) {
+    public void setColesterolVLDL(Integer colesterolVLDL) {
         this.colesterolVLDL = colesterolVLDL;
     }
 
-    public int getCreatina() {
+    public Integer getCreatina() {
         return creatina;
     }
 
-    public void setCreatina(int creatina) {
+    public void setCreatina(Integer creatina) {
         this.creatina = creatina;
     }
 
-    public int getTrigliceridio() {
+    public Integer getTrigliceridio() {
         return trigliceridio;
     }
 
-    public void setTrigliceridio(int trigliceridio) {
+    public void setTrigliceridio(Integer trigliceridio) {
         this.trigliceridio = trigliceridio;
     }
 

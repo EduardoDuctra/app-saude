@@ -25,7 +25,7 @@ public class TesteIMC {
 
         UsuarioPerfil perfil1 = new UsuarioPerfil();
         perfil1.setNome("Usuario 1");
-        perfil1.setSexo('M');
+        perfil1.setSexo(Sexo.M);
         perfil1.setAltura(1.73);
         usuario1.setPerfil(perfil1);
 
@@ -42,7 +42,7 @@ public class TesteIMC {
 
         UsuarioPerfil perfil2 = new UsuarioPerfil();
         perfil2.setNome("Usuario Atualizado");
-        perfil2.setSexo('F');
+        perfil2.setSexo(Sexo.F);
         perfil2.setAltura(1.68);
         usuario2.setPerfil(perfil2);
 
