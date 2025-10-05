@@ -29,7 +29,7 @@ public class MedicamentoController {
         this.medicamentoService = medicamentoService;
     }
 
-    @Operation(summary = "Listar todo os medicamentos", description = "Lista todo os medicamentos")
+    @Operation(summary = "Listar todo os medicamentos", description = "Retorna uma lista com todo os medicamentos cadastrados no banco de dados")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Medicamentos listados com sucesso",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Dados.class))),
@@ -45,7 +45,7 @@ public class MedicamentoController {
     }
 
     @GetMapping("/{codMedicamento}")
-    @Operation(summary = "Listar um medicamentos a partir do seu código", description = "Lista um medicamentos a partir do seu código")
+    @Operation(summary = "Listar um medicamentos a partir do seu código", description = "Retorna um medicamentos a partir do ID fornecido")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Medicamento listado com sucesso",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Dados.class))),
@@ -62,7 +62,7 @@ public class MedicamentoController {
     }
 
     @GetMapping("/buscar-por-usuario/{codUsuario}")
-    @Operation(summary = "Listar os medicamentos a partir do código do usuário", description = "Lista os medicamentos a partir do código do usuário")
+    @Operation(summary = "Listar os medicamentos a partir do código do usuário", description = "Retorna uma lista os medicamentos associados a um ID de usuário")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Medicamentos listados com sucesso",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Dados.class))),
@@ -74,7 +74,7 @@ public class MedicamentoController {
     }
 
     @PostMapping("/salvar")
-    @Operation(summary = "Criar um novo medicamento", description = "Cria um novo medicamento")
+    @Operation(summary = "Criar um novo medicamento", description = "Salva um novo medicamento no banco de dados")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Medicamento salvo com sucesso",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Dados.class))),
@@ -87,7 +87,7 @@ public class MedicamentoController {
     }
 
     @PutMapping("/atualizar")
-    @Operation(summary = "Atualizar um  medicamento", description = "Atualiza um medicamento")
+    @Operation(summary = "Atualizar um  medicamento", description = "Recebe um Medicamento e atualiza seus informações no banco de dados")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Medicamento atualizado com sucesso",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Dados.class))),
@@ -99,7 +99,7 @@ public class MedicamentoController {
     }
 
     @DeleteMapping("/deletar/{codMedicamento}")
-    @Operation(summary = "Deletar um medicamento", description = "Deleta um medicamento")
+    @Operation(summary = "Deletar um medicamento", description = "Deleta um medicamento do banco de dados")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Medicamento deletado com sucesso",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Dados.class))),

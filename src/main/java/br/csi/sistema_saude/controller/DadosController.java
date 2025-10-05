@@ -28,7 +28,7 @@ public class DadosController {
     }
 
     @GetMapping("/listar-dados")
-    @Operation(summary = "Listar todos os dados", description = "Lista todos os dados")
+    @Operation(summary = "Listar todos os dados", description = "Retorna uma lista todos os Dados cadastrados no banco de dados")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Dados listados com sucesso",
             content = @Content(mediaType = "application/json", schema = @Schema(implementation = Dados.class))),
@@ -43,7 +43,7 @@ public class DadosController {
     }
 
     @GetMapping("/{codDado}")
-    @Operation(summary = "Buscar dados a partir do seu código", description = "Busca dados a partir do seu código")
+    @Operation(summary = "Buscar dados a partir do seu código", description = "Retorna um Dado a partir de um ID fornecido")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Dado retornado com sucesso",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Dados.class))),
@@ -58,7 +58,7 @@ public class DadosController {
     }
 
     @GetMapping("/buscar-por-usuario/{codUsuario}")
-    @Operation(summary = "Busca todos os dados a partir do código do usuário", description = "Busca todos os dados a partir do código do usuário")
+    @Operation(summary = "Busca todos os dados a partir do código do usuário", description = "Retorna uma lista de Dados a partir do ID do usuário")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Dados retornados com sucesso",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Dados.class))),
@@ -74,7 +74,7 @@ public class DadosController {
     }
 
     @PostMapping("/salvar")
-    @Operation(summary = "Criar um novo dado", description = "Cria um novo dado")
+    @Operation(summary = "Criar um novo dado", description = "Salva um novo Dado no banco de dados")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Dado salvo com sucesso",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Dados.class))),
@@ -87,7 +87,7 @@ public class DadosController {
     }
 
     @PutMapping("/atualizar")
-    @Operation(summary = "Atualizar um dado existente", description = "Atualiza um dado existente")
+    @Operation(summary = "Atualizar um dado existente", description = "Recebe um Dado e realiza a atualiza de informações no banco de dados")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Dado atualizado com sucesso",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Dados.class))),
@@ -99,7 +99,7 @@ public class DadosController {
     }
 
     @DeleteMapping("/deletar/{codDado}")
-    @Operation(summary = "Deletar um dado existente", description = "Deleta um dado existente")
+    @Operation(summary = "Deletar um dado existente", description = "Deleta um dado existente do banco de dados")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Dado deletado com sucesso",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Dados.class))),

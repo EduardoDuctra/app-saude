@@ -36,7 +36,7 @@ public class UsuarioController {
 
 
     @GetMapping("/listar-usuarios")
-    @Operation(summary = "Listar todos os usuário", description = "Lista todos os usuários")
+    @Operation(summary = "Listar todos os usuário", description = "Retorna uma lista com todos os usuários")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Usuários listados com sucesso",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Dados.class))),
@@ -53,7 +53,7 @@ public class UsuarioController {
 
 
     @GetMapping("/{codUsuario}")
-    @Operation(summary = "Listar usuário pelo código dele", description = "Lista usuário pelo código dele")
+    @Operation(summary = "Listar usuário pelo código dele", description = "Retorna um usuário através do seu ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Usuário encontrado com sucesso",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Dados.class))),
@@ -70,7 +70,7 @@ public class UsuarioController {
 
     @PostMapping("/salvar")
     @Transactional
-    @Operation(summary = "Criar novo usuário", description = "Cria novo usuário")
+    @Operation(summary = "Criar novo usuário", description = "Cadastra um novo usuário ao banco de dados")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Usuário criado com sucesso",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Dados.class))),
@@ -84,7 +84,7 @@ public class UsuarioController {
 
     @PutMapping("/atualizar")
     @Transactional
-    @Operation(summary = "Atualizar um usuário", description = "Atualiza um usuário")
+    @Operation(summary = "Atualizar um usuário", description = "Recebe um Usuário e atualiza seus dados no banco de dados")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Usuário atualizado com sucesso",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Dados.class))),
@@ -96,7 +96,7 @@ public class UsuarioController {
     }
 
     @DeleteMapping("/deletar/{codUsuario}")
-    @Operation(summary = "Deletar um usuário", description = "Deleta um usuário")
+    @Operation(summary = "Deletar um usuário", description = "Deleta um usuário do banco de dados através do ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Usuário deletado com sucesso",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Dados.class))),
@@ -108,7 +108,7 @@ public class UsuarioController {
     }
 
     @PostMapping("/login")
-    @Operation(summary = "Validar do login", description = "Validação com o banco de dados")
+    @Operation(summary = "Validar do login", description = "Recebe um email e senha para verificar no banco de dados sua validação")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Login efetuado com sucesso",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Dados.class))),
@@ -129,7 +129,8 @@ public class UsuarioController {
     }
 
     @GetMapping("/{codUsuario}/imc")
-    @Operation(summary = "Calcular o IMC de um usuário", description = "Calcula o IMC de um usuário a partir do código do usuário")
+    @Operation(summary = "Calcular o IMC de um usuário", description = "Cria uma lista com os reatórios a partir do ID do usuário. " +
+            " Chama a função calcularIMC e envia os relatórios, para filtrar o mais recente e obter os dados ")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Cálculo efetuado com sucesso",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Dados.class))),
@@ -154,7 +155,8 @@ public class UsuarioController {
 
     //validar se está buscando o email certo.
     @GetMapping("/buscar-email")
-    @Operation(summary = "Buscar um usuário a partir do seu email", description = "Busca um usuário no banco de dados a partir do seu email")
+    @Operation(summary = "Buscar um usuário a partir do seu email", description = "Retorna um usuário no banco de dados a partir do seu email. " +
+            "Ela é necessária pois a classe onde está o email é UsuarioConta, associada a classe Usuario")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Usuário encontrado",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Dados.class))),

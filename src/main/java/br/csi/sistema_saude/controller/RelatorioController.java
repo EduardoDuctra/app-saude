@@ -37,7 +37,7 @@ public class RelatorioController {
     // Salvar um relatório
     @PostMapping("/salvar")
     @Transactional
-    @Operation(summary = "Criar um relatório", description = "Cria um relatório")
+    @Operation(summary = "Criar um relatório", description = "Cadastra um novo relatório ao banco de dados")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Relatório salvo com sucesso",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Dados.class))),
@@ -56,7 +56,7 @@ public class RelatorioController {
 
     // Listar todos os relatórios
     @GetMapping("listar-relatorios")
-    @Operation(summary = "Listar todos os relatórios", description = "Lista todos os relatórios")
+    @Operation(summary = "Listar todos os relatórios", description = "Retorna uma lista com todos os relatórios cadastrados no banco de dados")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Relatórios retornados com sucesso",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Dados.class))),
@@ -97,7 +97,8 @@ public class RelatorioController {
     // Listar relatorio de um tipo de dado especifico
     //http://localhost:8080/sistema-saude/relatorios/listar-por-tipo?codUsuario=2&tipoDado=glicose
     @GetMapping("/listar-por-tipo")
-    @Operation(summary = "Listar os dados por tipo", description = "Lista os dados por tipo. Exemplo: todos os dados de Glicose")
+    @Operation(summary = "Listar os dados por tipo", description = "Retorna uma lista de valores do tipo especificado (ex.: Glicose, ColesterolHDL, Peso) " +
+            "para o usuário identificado pelo ID fornecido")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Relatório retornado com sucesso",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Dados.class))),
