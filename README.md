@@ -34,6 +34,8 @@ Desenvolver um sistema que permita aos usuários controlar e acompanhar seus dad
 
 ![Diagrama ER](assets/diagrama_ER.png)
 
+---
+
 ## 🧪 Uso / Objetivos
 
 O sistema foi desenvolvido para que usuários possam:  
@@ -47,7 +49,7 @@ O sistema foi desenvolvido para que usuários possam:
 
 ## 📚 Protótipo
 
-
+![Protótipo(assets/prototipo.png)
 
 ---
 
