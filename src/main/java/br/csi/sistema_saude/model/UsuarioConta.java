@@ -32,6 +32,9 @@ public class UsuarioConta {
     @Schema(description = "Senha do usuário. Não pode ser nulo")
     private String senha;
 
+
+
+
     public String getEmail() {
         return email;
     }

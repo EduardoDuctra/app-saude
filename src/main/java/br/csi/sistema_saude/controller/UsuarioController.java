@@ -1,5 +1,8 @@
 package br.csi.sistema_saude.controller;
 
+import br.csi.sistema_saude.model.DTO.DadoUsuario;
+import br.csi.sistema_saude.model.DTO.IMCDTO;
+import br.csi.sistema_saude.model.DTO.UsuarioPerfilDTO;
 import br.csi.sistema_saude.model.Dados;
 import br.csi.sistema_saude.model.Relatorio;
 import br.csi.sistema_saude.model.Usuario;
@@ -42,12 +45,13 @@ public class UsuarioController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Dados.class))),
             @ApiResponse(responseCode = "400", description = "Usuários invalidos", content = @Content)
     })
-    public ResponseEntity<List<Usuario>> listarUsuarios() {
-        List<Usuario> usuarios = this.usuarioService.listarUsuarios();
-        if (usuarios.isEmpty()) {
-            throw new NoSuchElementException(); //chama o metodo NoSuchElementException da classe Tratador de Error
+    public ResponseEntity<List<DadoUsuario>> listarUsuarios() {
+        List<DadoUsuario> usuarios = this.usuarioService.listarUsuarios();
 
+        if (usuarios.isEmpty()) {
+            throw new NoSuchElementException(); // chama o método do Tratador de Error
         }
+
         return ResponseEntity.ok(usuarios); // 200
     }
 
@@ -59,13 +63,14 @@ public class UsuarioController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Dados.class))),
             @ApiResponse(responseCode = "400", description = "Código invalido", content = @Content)
     })
-    public ResponseEntity<Usuario> buscarUsuario(@PathVariable Integer codUsuario) {
-        Usuario usuario = this.usuarioService.buscarUsuario(codUsuario);
-        if (usuario == null) {
-            throw new NoSuchElementException(); //chama o metodo NoSuchElementException da classe Tratador de Error
+    public ResponseEntity<DadoUsuario> buscarUsuario(@PathVariable Integer codUsuario) {
+        DadoUsuario dto = this.usuarioService.buscarUsuario(codUsuario);
 
+        if (dto == null) {
+            throw new NoSuchElementException();
         }
-        return ResponseEntity.ok(usuario); // 200
+
+        return ResponseEntity.ok(dto);
     }
 
     @PostMapping("/salvar")
@@ -137,17 +142,24 @@ public class UsuarioController {
             @ApiResponse(responseCode = "400", description = "Erro ao calcular IMC", content = @Content)
     })
     public ResponseEntity<?> calcularIMC(@PathVariable Integer codUsuario) {
-        Usuario usuario = usuarioService.buscarUsuario(codUsuario);
-        if (usuario == null) {
-            throw new NoSuchElementException("Usuário não encontrado");
-        }
-
-        // Busca os relatórios do usuário
-        List<Relatorio> relatoriosDoUsuario = usuarioService.buscarRelatoriosPorUsuario(usuario);
-
         try {
-            double imc = usuarioService.calcularIMC(usuario, relatoriosDoUsuario);
-            return ResponseEntity.ok("IMC do usuário " + usuario.getPerfil().getNome() + ": " + imc);
+            // Busca o usuário (entidade)
+            Usuario usuario = usuarioService.buscarPorId(codUsuario); // retorna Usuario
+            if (usuario == null) {
+                throw new NoSuchElementException("Usuário não encontrado");
+            }
+
+            // Busca os relatórios do usuário
+            List<Relatorio> relatoriosDoUsuario = usuarioService.buscarRelatoriosPorUsuario(usuario);
+
+            // Calcula IMC e recebe o DTO
+            IMCDTO imcDTO = usuarioService.calcularIMC(usuario, relatoriosDoUsuario);
+
+            // Retorna o DTO diretamente em JSON
+            return ResponseEntity.ok(imcDTO);
+
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

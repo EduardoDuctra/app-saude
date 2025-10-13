@@ -1,10 +1,14 @@
 package br.csi.sistema_saude.service;
 
+import br.csi.sistema_saude.model.DTO.DadoUsuario;
+import br.csi.sistema_saude.model.DTO.IMCDTO;
+import br.csi.sistema_saude.model.DTO.UsuarioPerfilDTO;
 import br.csi.sistema_saude.model.Dados;
 import br.csi.sistema_saude.model.Relatorio;
 import br.csi.sistema_saude.model.Usuario;
 import br.csi.sistema_saude.repository.RelatorioRepository;
 import br.csi.sistema_saude.repository.UsuarioRepository;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -24,15 +28,17 @@ public class UsuarioService {
     }
 
     public void salvarUsuario(Usuario usuario) {
+        usuario.getConta().setSenha(new BCryptPasswordEncoder().encode(usuario.getConta().getSenha()));
         usuarioRepository.save(usuario);
     }
 
-    public List<Usuario> listarUsuarios() {
-        return usuarioRepository.findAll();
+    public List<DadoUsuario> listarUsuarios() {
+        return usuarioRepository.findAll().stream().map(DadoUsuario::new).toList();
     }
 
-    public Usuario buscarUsuario(Integer codUsuario) {
-        return usuarioRepository.findById(codUsuario).get();
+    public DadoUsuario buscarUsuario(Integer codUsuario) {
+        Usuario usuario = usuarioRepository.findById(codUsuario).get();
+        return new DadoUsuario(usuario);
     }
 
     public void excluirUsuario(Integer codUsuario) {
@@ -73,29 +79,36 @@ public class UsuarioService {
 
     }
 
-    public double calcularIMC(Usuario usuario, List<Relatorio> relatorios) {
+
+    public Usuario buscarPorId(Integer codUsuario) {
+        return usuarioRepository.findById(codUsuario)
+                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+    }
+
+
+    public IMCDTO calcularIMC(Usuario usuario, List<Relatorio> relatorios) {
         if (usuario == null || usuario.getPerfil() == null) {
             throw new IllegalArgumentException("Usuário ou perfil não podem ser nulos");
         }
 
-        double altura = usuario.getPerfil().getAltura();
+        // Converte para DTO de perfil
+        UsuarioPerfilDTO perfilDTO = new UsuarioPerfilDTO(usuario);
 
+        double altura = perfilDTO.altura();
         if (altura <= 0) {
             throw new IllegalArgumentException("Altura inválida");
         }
 
         // Pega o relatório mais recente
-        Optional<Relatorio> relatorioRecente = relatorios.stream()
-                .max(Comparator.comparing(r -> r.getId().getData()));
+        Relatorio relatorioRecente = relatorios.stream()
+                .max(Comparator.comparing(r -> r.getId().getData()))
+                .orElseThrow(() -> new IllegalArgumentException("Nenhum relatório encontrado"));
 
-        if (relatorioRecente.isEmpty()) {
-            throw new IllegalArgumentException("Nenhum relatório encontrado para o usuário");
-        }
+        double peso = relatorioRecente.getDados().getPeso();
+        double imc = peso / Math.pow(altura, 2);
 
-        double peso = relatorioRecente.get().getDados().getPeso();
-
-        // IMC = peso / (altura^2)
-        return peso / (altura * altura);
+        // Retorna o DTO com nome, altura e IMC
+        return new IMCDTO(usuario.getPerfil().getNome(), altura, imc);
     }
 
 

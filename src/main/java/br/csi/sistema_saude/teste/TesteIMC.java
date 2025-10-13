@@ -1,6 +1,7 @@
 package br.csi.sistema_saude.teste;
 
 import br.csi.sistema_saude.model.*;
+import br.csi.sistema_saude.model.DTO.IMCDTO;
 import br.csi.sistema_saude.service.UsuarioService;
 
 import java.time.LocalDate;
@@ -11,7 +12,7 @@ public class TesteIMC {
 
     public static void main(String[] args) {
 
-        // --- Criação de usuários a partir do JSON ---
+        // --- Criação de usuários ---
         List<Usuario> usuarios = new ArrayList<>();
 
         // Usuario 1
@@ -48,13 +49,13 @@ public class TesteIMC {
 
         usuarios.add(usuario2);
 
-        // --- Criando relatórios com pesos diferentes ---
+        // --- Criando relatórios ---
         List<Relatorio> relatorios = new ArrayList<>();
 
         // Relatórios para usuario1
         Dados dados1 = new Dados();
         dados1.setPeso(70.5);
-        Relatorio relatorio1 = new Relatorio(); // construtor padrão
+        Relatorio relatorio1 = new Relatorio();
         relatorio1.setId(new RelatorioId(usuario1.getCodUsuario(), 1, LocalDate.of(2025, 9, 15)));
         relatorio1.setUsuario(usuario1);
         relatorio1.setDados(dados1);
@@ -62,7 +63,7 @@ public class TesteIMC {
 
         Dados dados2 = new Dados();
         dados2.setPeso(72.0);
-        Relatorio relatorio2 = new Relatorio(); // construtor padrão
+        Relatorio relatorio2 = new Relatorio();
         relatorio2.setId(new RelatorioId(usuario1.getCodUsuario(), 2, LocalDate.of(2025, 9, 20)));
         relatorio2.setUsuario(usuario1);
         relatorio2.setDados(dados2);
@@ -71,14 +72,14 @@ public class TesteIMC {
         // Relatório para usuario2
         Dados dados3 = new Dados();
         dados3.setPeso(65.0);
-        Relatorio relatorio3 = new Relatorio(); // construtor padrão
+        Relatorio relatorio3 = new Relatorio();
         relatorio3.setId(new RelatorioId(usuario2.getCodUsuario(), 3, LocalDate.of(2025, 9, 18)));
         relatorio3.setUsuario(usuario2);
         relatorio3.setDados(dados3);
         relatorios.add(relatorio3);
 
-        // --- Teste da função calcularIMC ---
-        UsuarioService usuarioService = new UsuarioService(null, null); // Repositório não é necessário para teste em memória
+        // --- Teste da função calcularIMC com IMCDTO ---
+        UsuarioService usuarioService = new UsuarioService(null, null); // Repositórios não usados neste teste
 
         for (Usuario u : usuarios) {
             // Filtra apenas os relatórios do usuário atual
@@ -89,8 +90,15 @@ public class TesteIMC {
                 }
             }
 
-            double imc = usuarioService.calcularIMC(u, relatoriosDoUsuario);
-            System.out.printf("IMC do usuário %s: %.2f%n", u.getPerfil().getNome(), imc);
+            try {
+                // Calcula IMC retornando o DTO
+                IMCDTO imcDTO = usuarioService.calcularIMC(u, relatoriosDoUsuario);
+                System.out.printf("IMC do usuário %s: %.2f (Altura: %.2f)%n",
+                        imcDTO.nome(), imcDTO.imc(), imcDTO.altura());
+            } catch (IllegalArgumentException e) {
+                System.out.printf("Erro ao calcular IMC do usuário %s: %s%n",
+                        u.getPerfil().getNome(), e.getMessage());
+            }
         }
     }
 }
