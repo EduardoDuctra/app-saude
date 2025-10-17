@@ -30,9 +30,10 @@ public class DadosController {
     @GetMapping("/listar-dados")
     @Operation(summary = "Listar todos os dados", description = "Retorna uma lista todos os Dados cadastrados no banco de dados")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Dados listados com sucesso",
+            @ApiResponse(responseCode = "200", description = "Dados listados com sucesso",
             content = @Content(mediaType = "application/json", schema = @Schema(implementation = Dados.class))),
-            @ApiResponse(responseCode = "400", description = "Dados invalidos", content = @Content)
+            @ApiResponse(responseCode = "400", description = "Dados invalidos", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Erro ao encontrar dados", content = @Content)
     })
     public ResponseEntity<List<Dados>> listarTodosDados() {
         List<Dados> dados = dadosService.listarDados();
@@ -45,14 +46,15 @@ public class DadosController {
     @GetMapping("/{codDado}")
     @Operation(summary = "Buscar dados a partir do seu código", description = "Retorna um Dado a partir de um ID fornecido")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Dado retornado com sucesso",
+            @ApiResponse(responseCode = "200", description = "Dado retornado com sucesso",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Dados.class))),
-            @ApiResponse(responseCode = "400", description = "Dado invalido", content = @Content)
+            @ApiResponse(responseCode = "400", description = "Dado invalido", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Erro ao encontrar dados", content = @Content)
     })
     public ResponseEntity<Dados> buscarDado(@PathVariable Integer codDado) {
         Dados dados = this.dadosService.buscarDados(codDado);
         if(dados == null) {
-            throw new NoSuchElementException(); //chama o metodo NoSuchElementException da classe Tratador de Error
+            throw new NoSuchElementException("Dado não encontrado"); //chama o metodo NoSuchElementException da classe Tratador de Error
         }
         return ResponseEntity.ok(dados); //200
     }
@@ -60,9 +62,10 @@ public class DadosController {
     @GetMapping("/buscar-por-usuario/{codUsuario}")
     @Operation(summary = "Busca todos os dados a partir do código do usuário", description = "Retorna uma lista de Dados a partir do ID do usuário")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Dados retornados com sucesso",
+            @ApiResponse(responseCode = "200", description = "Dados retornados com sucesso",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Dados.class))),
-            @ApiResponse(responseCode = "400", description = "Dados invalidos", content = @Content)
+            @ApiResponse(responseCode = "400", description = "Dados invalidos", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Erro ao encontrar dados", content = @Content)
     })
     public ResponseEntity<List<Dados>> buscarDadosUsuario(@PathVariable Integer codUsuario) {
         List<Dados> dados = this.dadosService.buscarDadosUsuario(codUsuario);
@@ -83,15 +86,16 @@ public class DadosController {
     public ResponseEntity salvarDados(@RequestBody Dados dados, UriComponentsBuilder uriBuilder) {
         this.dadosService.salvarDados(dados);
         URI uri = uriBuilder.path("/dados/{codDado}").buildAndExpand(dados.getCodDado()).toUri();
-        return ResponseEntity.created(uri).build(); //200 OK
+        return ResponseEntity.created(uri).body(dados); //200 OK
     }
 
     @PutMapping("/atualizar")
     @Operation(summary = "Atualizar um dado existente", description = "Recebe um Dado e realiza a atualiza de informações no banco de dados")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Dado atualizado com sucesso",
+            @ApiResponse(responseCode = "200", description = "Dado atualizado com sucesso",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Dados.class))),
-            @ApiResponse(responseCode = "400", description = "Erro ao atualizar", content = @Content)
+            @ApiResponse(responseCode = "400", description = "Erro ao atualizar", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Erro ao encontrar dados", content = @Content)
     })
     public ResponseEntity atualizarDados(@RequestBody Dados dados) {
         this.dadosService.atualizarDados(dados);
@@ -101,9 +105,10 @@ public class DadosController {
     @DeleteMapping("/deletar/{codDado}")
     @Operation(summary = "Deletar um dado existente", description = "Deleta um dado existente do banco de dados")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Dado deletado com sucesso",
+            @ApiResponse(responseCode = "204", description = "Dado deletado com sucesso",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Dados.class))),
-            @ApiResponse(responseCode = "400", description = "Erro ao deletar", content = @Content)
+            @ApiResponse(responseCode = "400", description = "Erro ao deletar", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Erro ao encontrar dados", content = @Content)
     })
     public ResponseEntity excluirDados(@PathVariable Integer codDado) {
         this.dadosService.excluirDados(codDado);

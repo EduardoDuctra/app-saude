@@ -18,6 +18,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain (HttpSecurity http) throws Exception {
 
         //libera os endpoint
+        //desabilitar quando for para produção
         return http
                 .csrf(crsf -> crsf.disable())
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

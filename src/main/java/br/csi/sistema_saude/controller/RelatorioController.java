@@ -58,14 +58,15 @@ public class RelatorioController {
     @GetMapping("listar-relatorios")
     @Operation(summary = "Listar todos os relatórios", description = "Retorna uma lista com todos os relatórios cadastrados no banco de dados")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Relatórios retornados com sucesso",
+            @ApiResponse(responseCode = "200", description = "Relatórios retornados com sucesso",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Dados.class))),
-            @ApiResponse(responseCode = "400", description = "Erro ao retornar relatórios", content = @Content)
+            @ApiResponse(responseCode = "400", description = "Erro ao retornar relatórios", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Erro ao encontrar dados", content = @Content),
     })
     public ResponseEntity<List<Relatorio>> listarRelatorios() {
         List<Relatorio> relatorios = relatorioService.listarRelatorios();
         if (relatorios.isEmpty()) {
-            throw new NoSuchElementException(); //chama o metodo NoSuchElementException da classe Tratador de Error
+            throw new NoSuchElementException("Erro ao listar relatórios"); //chama o metodo NoSuchElementException da classe Tratador de Error
         }
         return ResponseEntity.ok(relatorios); //200
     }
@@ -74,9 +75,10 @@ public class RelatorioController {
     @GetMapping("/{codUsuario}/{codDado}/{data}")
     @Operation(summary = "Retornar um relatório com base na chave primária", description = "Retorna um relatório com base na chave primária (código do usuário + código do dado + data")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Relatório retornado com sucesso",
+            @ApiResponse(responseCode = "200", description = "Relatório retornado com sucesso",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Dados.class))),
-            @ApiResponse(responseCode = "400", description = "Erro ao retornar relatório", content = @Content)
+            @ApiResponse(responseCode = "400", description = "Erro ao retornar relatório", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Erro ao encontrar dados", content = @Content),
     })
     public ResponseEntity<Relatorio> buscarRelatorio(
             @PathVariable int codUsuario,
@@ -87,7 +89,7 @@ public class RelatorioController {
         Relatorio relatorio = relatorioService.buscarRelatorio(id);
 
         if (relatorio == null) {
-            throw new NoSuchElementException(); //chama o metodo NoSuchElementException da classe Tratador de Error
+            throw new NoSuchElementException("Relatório não encontrado"); //chama o metodo NoSuchElementException da classe Tratador de Error
         }
 
         return ResponseEntity.ok(relatorio); //  200
@@ -100,9 +102,10 @@ public class RelatorioController {
     @Operation(summary = "Listar os dados por tipo", description = "Retorna uma lista de valores do tipo especificado (ex.: Glicose, ColesterolHDL, Peso) " +
             "para o usuário identificado pelo ID fornecido")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Relatório retornado com sucesso",
+            @ApiResponse(responseCode = "200", description = "Relatório retornado com sucesso",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Dados.class))),
-            @ApiResponse(responseCode = "400", description = "Erro ao retornar relatório", content = @Content)
+            @ApiResponse(responseCode = "400", description = "Erro ao retornar relatório", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Erro ao encontrar dados", content = @Content),
     })
     public ResponseEntity<List<Double>> listarTipoDado(
             @RequestParam int codUsuario,
@@ -111,7 +114,7 @@ public class RelatorioController {
         List<Double> valores = relatorioService.listarValoresPorUsuarioETipo(codUsuario, tipoDado);
 
         if (valores.isEmpty()) {
-            throw new NoSuchElementException(); //chama o metodo NoSuchElementException da classe Tratador de Error
+            throw new NoSuchElementException("Valores vazio"); //chama o metodo NoSuchElementException da classe Tratador de Error
         }
         return ResponseEntity.ok(valores); //200
     }
@@ -121,9 +124,10 @@ public class RelatorioController {
     @DeleteMapping("/{codUsuario}/{codDado}/{data}")
     @Operation(summary = "Deletar um relatório com base na chave primária", description = "Deleta um relatório com base na chave primária (código do usuário + código do dado + data")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Relatório deletato com sucesso",
+            @ApiResponse(responseCode = "204", description = "Relatório deletato com sucesso",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Dados.class))),
-            @ApiResponse(responseCode = "400", description = "Erro ao deletar relatório", content = @Content)
+            @ApiResponse(responseCode = "400", description = "Erro ao deletar relatório", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Erro ao encontrar dados", content = @Content),
     })
     public ResponseEntity excluirRelatorio(
             @PathVariable int codUsuario,

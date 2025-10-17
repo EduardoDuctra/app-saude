@@ -3,7 +3,6 @@ package br.csi.sistema_saude.service;
 import br.csi.sistema_saude.model.DTO.DadoUsuario;
 import br.csi.sistema_saude.model.DTO.IMCDTO;
 import br.csi.sistema_saude.model.DTO.UsuarioPerfilDTO;
-import br.csi.sistema_saude.model.Dados;
 import br.csi.sistema_saude.model.Relatorio;
 import br.csi.sistema_saude.model.Usuario;
 import br.csi.sistema_saude.repository.RelatorioRepository;
@@ -13,7 +12,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
+import java.util.NoSuchElementException;
+
 
 @Service
 public class UsuarioService {
@@ -82,13 +82,13 @@ public class UsuarioService {
 
     public Usuario buscarPorId(Integer codUsuario) {
         return usuarioRepository.findById(codUsuario)
-                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+                .orElseThrow(() -> new NoSuchElementException("Usuário não encontrado"));
     }
 
 
     public IMCDTO calcularIMC(Usuario usuario, List<Relatorio> relatorios) {
         if (usuario == null || usuario.getPerfil() == null) {
-            throw new IllegalArgumentException("Usuário ou perfil não podem ser nulos");
+            throw new NoSuchElementException("Usuário ou perfil não podem ser nulos");
         }
 
         // Converte para DTO de perfil
@@ -96,13 +96,13 @@ public class UsuarioService {
 
         double altura = perfilDTO.altura();
         if (altura <= 0) {
-            throw new IllegalArgumentException("Altura inválida");
+            throw new NoSuchElementException("Altura inválida");
         }
 
         // Pega o relatório mais recente
         Relatorio relatorioRecente = relatorios.stream()
                 .max(Comparator.comparing(r -> r.getId().getData()))
-                .orElseThrow(() -> new IllegalArgumentException("Nenhum relatório encontrado"));
+                .orElseThrow(() -> new NoSuchElementException("Nenhum relatório encontrado"));
 
         double peso = relatorioRecente.getDados().getPeso();
         double imc = peso / Math.pow(altura, 2);

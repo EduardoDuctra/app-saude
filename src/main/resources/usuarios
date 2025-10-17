@@ -1,0 +1,11 @@
+{
+  "conta": {
+    "email": "13out@email.com",
+    "senha": "123"
+  },
+  "perfil": {
+    "nome": "Novo Usuário",
+    "sexo": "F",
+    "altura": 1.65
+  }
+}
