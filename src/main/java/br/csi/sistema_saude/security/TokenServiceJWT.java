@@ -14,13 +14,16 @@ import java.time.ZoneOffset;
 @Service
 public class TokenServiceJWT {
 
+    private String chave = "poow2";
+    private String emissor = "Api de saude";
+
     //gera o Token de validação
     public String gerarToken(User user) {
-        Algorithm algorithm = Algorithm.HMAC256("poow2"); // Define o algoritmo HMAC256 com a chave secreta/senha
+        Algorithm algorithm = Algorithm.HMAC256(chave); // Define o algoritmo HMAC256 com a chave secreta/senha
         return JWT.create()
-                .withIssuer("Api de saude") //Define quem emite o token (issuer)
+                .withIssuer(emissor) //Define quem emite o token (issuer)
                 .withSubject(user.getUsername()) //nome usuário
-                .withClaim("ROLE", user.getAuthorities().stream().toList().get(0).toString()) //autorização/role
+                .withClaim("permissao", user.getAuthorities().stream().toList().get(0).toString()) //autorização/role
                 .withExpiresAt(dataExpiracao()) //tempo para expirar o token
                 .sign(algorithm); // Assina o token usando o algoritmo definido
     }
@@ -31,9 +34,9 @@ public class TokenServiceJWT {
 
     public String getSubject(String token) {
         try {
-            Algorithm algorithm = Algorithm.HMAC256("poow2");
+            Algorithm algorithm = Algorithm.HMAC256(chave);
             return JWT.require(algorithm)
-                    .withIssuer("Api de saude")
+                    .withIssuer(emissor)
                     .build()
                     .verify(token)
                     .getSubject();

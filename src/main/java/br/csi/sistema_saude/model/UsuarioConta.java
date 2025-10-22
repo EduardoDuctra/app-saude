@@ -33,7 +33,19 @@ public class UsuarioConta {
     private String senha;
 
 
+    @Column(name = "permissao", nullable = false)
+    @Schema(description = "Permissão do usuário. Pode ser 'usuario' ou 'adm'")
+    private String permissao = "usuario";
 
+
+
+    public String getPermissao() {
+        return permissao;
+    }
+
+    public void setPermissao(String permissao) {
+        this.permissao = permissao;
+    }
 
     public String getEmail() {
         return email;

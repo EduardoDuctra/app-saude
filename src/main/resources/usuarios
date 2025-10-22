@@ -9,3 +9,18 @@
     "altura": 1.65
   }
 }
+
+
+
+{
+  "conta": {
+    "email": "adm@email.com",
+    "senha": "123",
+    "permissao": "ROLE_ADMIN"
+  },
+  "perfil": {
+    "nome": "Administrador",
+    "sexo": "M",
+    "altura": 1.80
+  }
+}

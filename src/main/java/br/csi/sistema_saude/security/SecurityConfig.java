@@ -34,9 +34,28 @@ public class SecurityConfig {
                 .csrf(crsf -> crsf.disable())
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, "/login").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/usuario/**").hasAnyAuthority("ROLE_USER")
-                        .anyRequest().authenticated()
+                       // libera Swagger e documentação
+                                .requestMatchers(
+                                        "/api-docs/**",
+                                        "/swagger-ui/**",
+                                        "/swagger-ui.html",
+                                        "/swagger-resources/**",
+                                        "/webjars/**"
+
+                                ).permitAll()
+                                .requestMatchers(HttpMethod.POST, "/login").permitAll()
+
+                                .requestMatchers(HttpMethod.POST, "/usuario/salvar").permitAll()
+
+                                // Endpoint restrito a ADMIN
+                                .requestMatchers("/usuario/listar-usuarios").hasAuthority("ROLE_ADMIN")
+
+                                // Endpoint restrito a ADMIN
+//                                .requestMatchers("/usuario/{codUsuario}").hasAuthority("ROLE_ADMIN")
+
+                                // Qualquer outro endpoint exige autenticação
+                                .anyRequest().authenticated()
+
                 )
                 .addFilterBefore(this.autenticacaoFilter, UsernamePasswordAuthenticationFilter.class);
 
