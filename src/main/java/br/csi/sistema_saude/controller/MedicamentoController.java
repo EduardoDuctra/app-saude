@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -84,7 +85,7 @@ public class MedicamentoController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Medicamento.class))),
             @ApiResponse(responseCode = "400", description = "Erro ao salvar medicamento", content = @Content)
     })
-    public ResponseEntity salvarMedicamento(@RequestBody Medicamento medicamento, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity salvarMedicamento(@Valid @RequestBody Medicamento medicamento, UriComponentsBuilder uriBuilder) {
 
 
         //retorno o usuário logado
@@ -110,7 +111,7 @@ public class MedicamentoController {
             @ApiResponse(responseCode = "400", description = "Erro ao atualizar medicamento", content = @Content),
             @ApiResponse(responseCode = "404", description = "Erro ao encontrar dados", content = @Content)
     })
-    public ResponseEntity atualizarMedicamento(@RequestBody Medicamento medicamento) {
+    public ResponseEntity atualizarMedicamento(@Valid @RequestBody Medicamento medicamento) {
 
         //retorno o usuário logado
         //retorno o usuário do BD pelo email

@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -51,7 +52,7 @@ public class BancoMedicamentoController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = BancoMedicamentos.class))),
             @ApiResponse(responseCode = "400", description = "Erro ao salvar nome de medicamento", content = @Content)
     })
-    public ResponseEntity<BancoMedicamentos> salvar(@RequestBody BancoMedicamentos bancoMedicamentos, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<BancoMedicamentos> salvar(@Valid @RequestBody BancoMedicamentos bancoMedicamentos, UriComponentsBuilder uriBuilder) {
         bancoMedicamentoService.salvarNomeMedicamento(bancoMedicamentos);
         URI uri = uriBuilder.path("/nome-medicamentos/{id}")
                 .buildAndExpand(bancoMedicamentos.getCodNomeMedicamento()).toUri();
@@ -67,7 +68,7 @@ public class BancoMedicamentoController {
             @ApiResponse(responseCode = "400", description = "Erro ao atualizar nome de medicamento", content = @Content),
             @ApiResponse(responseCode = "404", description = "Nome de medicamento não encontrado", content = @Content)
     })
-    public ResponseEntity<BancoMedicamentos> atualizar(@RequestBody BancoMedicamentos bancoMedicamentos) {
+    public ResponseEntity<BancoMedicamentos> atualizar(@Valid @RequestBody BancoMedicamentos bancoMedicamentos) {
 
         bancoMedicamentoService.atualizarNomeMedicamento(bancoMedicamentos.getCodNomeMedicamento(), bancoMedicamentos.getNome());
         return ResponseEntity.ok(bancoMedicamentos);

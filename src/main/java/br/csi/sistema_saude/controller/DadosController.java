@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -40,7 +41,6 @@ public class DadosController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Dado retornado com sucesso",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Dados.class))),
-            @ApiResponse(responseCode = "400", description = "Dado invalido", content = @Content),
             @ApiResponse(responseCode = "404", description = "Erro ao encontrar dados", content = @Content)
     })
     public ResponseEntity<Dados> buscarDado(@PathVariable Integer codDado) {
@@ -57,7 +57,6 @@ public class DadosController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Dados retornados com sucesso",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Dados.class))),
-            @ApiResponse(responseCode = "400", description = "Dados invalidos", content = @Content),
             @ApiResponse(responseCode = "404", description = "Erro ao encontrar dados", content = @Content)
     })
     public ResponseEntity<List<Dados>> buscarDadosUsuario() {
@@ -84,7 +83,7 @@ public class DadosController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Dados.class))),
             @ApiResponse(responseCode = "400", description = "Erro ao salvar", content = @Content)
     })
-    public ResponseEntity salvarDados(@RequestBody Dados dados, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity salvarDados(@Valid @RequestBody Dados dados, UriComponentsBuilder uriBuilder) {
 
         //retorno o usuário logado
         //retorno o usuário do BD pelo email
@@ -108,7 +107,7 @@ public class DadosController {
             @ApiResponse(responseCode = "400", description = "Erro ao atualizar", content = @Content),
             @ApiResponse(responseCode = "404", description = "Erro ao encontrar dados", content = @Content)
     })
-    public ResponseEntity atualizarDados(@RequestBody Dados dados) {
+    public ResponseEntity atualizarDados(@Valid @RequestBody Dados dados) {
 
         //retorno o usuário logado
         //retorno o usuário do BD pelo email
