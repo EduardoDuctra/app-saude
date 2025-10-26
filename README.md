@@ -16,11 +16,11 @@ Desenvolver um sistema que permita aos usuários controlar e acompanhar seus dad
 
 O sistema possui as seguintes tabelas principais:
 
-**Usuario** – informações dos usuários do sistema.
-**Dados** – registros clínicos de cada usuário, vinculados à tabela Usuario através da data de registro.
-**Relatorios** – relatórios gerados a partir dos dados, associando usuário e dados pelo ID e data.
-**BaseMedicamentos** – cadastro dos nomes dos medicamentos disponíveis no sistema.
-**Medicamentos** – tabela que cria o relacionamento N:N entre usuários e medicamentos, armazenando informações personalizadas de cada tratamento, como dosagem, frequência e duração.
+- **Usuario** – informações dos usuários do sistema.
+- **Dados** – registros clínicos de cada usuário, vinculados à tabela Usuario através da data de registro.
+- **Relatorios** – relatórios gerados a partir dos dados, associando usuário e dados pelo ID e data.
+- **BaseMedicamentos** – cadastro dos nomes dos medicamentos disponíveis no sistema.
+- **Medicamentos** – tabela que cria o relacionamento N:N entre usuários e medicamentos, armazenando informações personalizadas de cada tratamento, como dosagem, frequência e duração.
 
 ---
 
