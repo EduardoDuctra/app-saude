@@ -75,15 +75,9 @@ public class DadosController {
             throw new NoSuchElementException("Usuário não encontrado"); //chama o metodo NoSuchElementException da classe Tratador de Error
         }
         List<DadosDTO> dadosDTOList = new ArrayList<>();
+
         for (Dados d : dados) {
-            DadosDTO dto = new DadosDTO();
-            dto.setCodDado(d.getCodDado());
-            dto.setPeso(d.getPeso());
-            dto.setGlicose(d.getGlicose());
-            dto.setColesterolHDL(d.getColesterolHDL());
-            dto.setColesterolVLDL(d.getColesterolVLDL());
-            dto.setCreatina(d.getCreatina());
-            dto.setTrigliceridio(d.getTrigliceridio());
+            DadosDTO dto = new DadosDTO(d);
             dadosDTOList.add(dto);
         }
 

@@ -1,25 +1,13 @@
 package br.csi.sistema_saude.model.DTO;
 
+import br.csi.sistema_saude.model.Relatorio;
+
 import java.time.LocalDate;
 
-public class RelatorioDTO {
+public record RelatorioDTO (Double valor, LocalDate data){
 
-    private Double valor;
-    private LocalDate data;
-
-    public Double getValor() {
-        return valor;
+    public RelatorioDTO(Relatorio relatorio, Double valor) {
+        this(valor, relatorio.getId().getData());
     }
 
-    public void setValor(Double valor) {
-        this.valor = valor;
-    }
-
-    public LocalDate getData() {
-        return data;
-    }
-
-    public void setData(LocalDate data) {
-        this.data = data;
-    }
 }

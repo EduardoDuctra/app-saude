@@ -1,0 +1,2 @@
+ALTER TABLE farmacia DROP COLUMN nome;
+ALTER TABLE farmacia DROP COLUMN email;

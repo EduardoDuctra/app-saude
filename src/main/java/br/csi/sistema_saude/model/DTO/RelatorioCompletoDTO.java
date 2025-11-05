@@ -1,69 +1,26 @@
 package br.csi.sistema_saude.model.DTO;
+import br.csi.sistema_saude.model.Relatorio;
+
 import java.time.LocalDate;
 
-public class RelatorioCompletoDTO {
-
-    private LocalDate data;
-    private Double peso;
-    private Integer glicose;
-    private Integer colesterolHDL;
-    private Integer colesterolVLDL;
-    private Integer creatina;
-    private Integer trigliceridio;
-
-    public LocalDate getData() {
-        return data;
-    }
-
-    public void setData(LocalDate data) {
-        this.data = data;
-    }
-
-    public Double getPeso() {
-        return peso;
-    }
-
-    public void setPeso(Double peso) {
-        this.peso = peso;
-    }
-
-    public Integer getGlicose() {
-        return glicose;
-    }
-
-    public void setGlicose(Integer glicose) {
-        this.glicose = glicose;
-    }
-
-    public Integer getColesterolHDL() {
-        return colesterolHDL;
-    }
-
-    public void setColesterolHDL(Integer colesterolHDL) {
-        this.colesterolHDL = colesterolHDL;
-    }
-
-    public Integer getColesterolVLDL() {
-        return colesterolVLDL;
-    }
-
-    public void setColesterolVLDL(Integer colesterolVLDL) {
-        this.colesterolVLDL = colesterolVLDL;
-    }
-
-    public Integer getCreatina() {
-        return creatina;
-    }
-
-    public void setCreatina(Integer creatina) {
-        this.creatina = creatina;
-    }
-
-    public Integer getTrigliceridio() {
-        return trigliceridio;
-    }
-
-    public void setTrigliceridio(Integer trigliceridio) {
-        this.trigliceridio = trigliceridio;
+public record RelatorioCompletoDTO(
+        LocalDate data,
+        Double peso,
+        Integer glicose,
+        Integer colesterolHDL,
+        Integer colesterolVLDL,
+        Integer creatina,
+        Integer trigliceridio
+) {
+    public RelatorioCompletoDTO(Relatorio relatorio) {
+        this(
+                relatorio.getId().getData(),
+                relatorio.getDados().getPeso(),
+                relatorio.getDados().getGlicose(),
+                relatorio.getDados().getColesterolHDL(),
+                relatorio.getDados().getColesterolVLDL(),
+                relatorio.getDados().getCreatina(),
+                relatorio.getDados().getTrigliceridio()
+        );
     }
 }

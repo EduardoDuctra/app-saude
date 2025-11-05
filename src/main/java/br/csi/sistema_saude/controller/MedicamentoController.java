@@ -79,17 +79,23 @@ public class MedicamentoController {
         List<Medicamento> medicamentos = medicamentoService.buscarMedicamentoUsuario(usuario.getCodUsuario());
 
         List<MedicamentoDTO> medicamentosDTO = new ArrayList<>();
-        for(Medicamento m : medicamentos) {
-            MedicamentoDTO dto = new MedicamentoDTO();
+
+        for (Medicamento m : medicamentos) {
+            String nomeMedicamento;
             if (m.getBancoMedicamentos() != null) {
-                dto.setNomeMedicamento(m.getBancoMedicamentos().getNome());
+                nomeMedicamento = m.getBancoMedicamentos().getNome();
             } else {
-                dto.setNomeMedicamento("Indefinido");
+                nomeMedicamento = "Indefinido";
             }
-            dto.setCodMedicamento(m.getCodMedicamento());
-            dto.setDoseDiaria(m.getDoseDiaria());
-            dto.setDataInicio(m.getDataInicio().toString());
-            dto.setDuracaoTratamento(m.getDuracaoTratamento());
+
+            MedicamentoDTO dto = new MedicamentoDTO(
+                    m.getCodMedicamento(),
+                    nomeMedicamento,
+                    m.getDoseDiaria(),
+                    m.getDataInicio(),
+                    m.getDuracaoTratamento()
+            );
+
             medicamentosDTO.add(dto);
         }
 

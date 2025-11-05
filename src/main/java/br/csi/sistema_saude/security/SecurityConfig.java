@@ -59,11 +59,18 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/login").permitAll()
 
                                 .requestMatchers(HttpMethod.POST, "/usuario/salvar").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/farmacia/salvar").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/farmacia/salvar").permitAll()
 
                                 // Endpoint restrito a ADMIN
                                 .requestMatchers("/usuario/listar-usuarios").hasAuthority("ROLE_ADMIN")
                                 .requestMatchers("/banco-medicamentos/**").hasAuthority("ROLE_ADMIN")
 
+                                // Endpoint /recolhimento → somente ROLE_FARMACIA
+                                .requestMatchers("/recolhimento/**").hasAuthority("farmacia")
+
+                                .requestMatchers(HttpMethod.GET, "/farmacia/listar-farmacias").hasAuthority("ROLE_ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "/farmacia/atualizar-farmacia").hasAuthority("farmacia")
 
                                 // Qualquer outro endpoint exige autenticação
                                 .anyRequest().authenticated()

@@ -1,49 +1,23 @@
 package br.csi.sistema_saude.model.DTO;
 
-public class MedicamentoDTO {
-    private int codMedicamento;
-    private String nomeMedicamento;
-    private int doseDiaria;
-    private String dataInicio;
-    private int duracaoTratamento;
+import br.csi.sistema_saude.model.Medicamento;
 
-    public int getCodMedicamento() {
-        return codMedicamento;
-    }
+import java.time.LocalDate;
 
-    public void setCodMedicamento(int codMedicamento) {
-        this.codMedicamento = codMedicamento;
-    }
-
-    public String getNomeMedicamento() {
-        return nomeMedicamento;
-    }
-
-    public void setNomeMedicamento(String nomeMedicamento) {
-        this.nomeMedicamento = nomeMedicamento;
-    }
-
-    public int getDoseDiaria() {
-        return doseDiaria;
-    }
-
-    public void setDoseDiaria(int doseDiaria) {
-        this.doseDiaria = doseDiaria;
-    }
-
-    public String getDataInicio() {
-        return dataInicio;
-    }
-
-    public void setDataInicio(String dataInicio) {
-        this.dataInicio = dataInicio;
-    }
-
-    public int getDuracaoTratamento() {
-        return duracaoTratamento;
-    }
-
-    public void setDuracaoTratamento(int duracaoTratamento) {
-        this.duracaoTratamento = duracaoTratamento;
+public record MedicamentoDTO(
+        int codMedicamento,
+        String nomeMedicamento,
+        int doseDiaria,
+        LocalDate dataInicio,
+        int duracaoTratamento
+) {
+    public MedicamentoDTO(Medicamento medicamento) {
+        this(
+                medicamento.getCodMedicamento(),
+                medicamento.getBancoMedicamentos().getNome(),
+                medicamento.getDoseDiaria(),
+                medicamento.getDataInicio(),
+                medicamento.getDuracaoTratamento()
+        );
     }
 }

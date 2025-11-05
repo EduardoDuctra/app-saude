@@ -1,15 +1,19 @@
 package br.csi.sistema_saude.service;
 
+import br.csi.sistema_saude.model.DTO.DadoFarmaciaDTO;
 import br.csi.sistema_saude.model.DTO.DadoUsuarioDTO;
 import br.csi.sistema_saude.model.DTO.IMCDTO;
 import br.csi.sistema_saude.model.DTO.UsuarioPerfilDTO;
+import br.csi.sistema_saude.model.Farmacia;
 import br.csi.sistema_saude.model.Relatorio;
 import br.csi.sistema_saude.model.Usuario;
+import br.csi.sistema_saude.repository.FarmaciaRepository;
 import br.csi.sistema_saude.repository.RelatorioRepository;
 import br.csi.sistema_saude.repository.UsuarioRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -26,6 +30,7 @@ public class UsuarioService {
                           RelatorioRepository relatorioRepository) {
         this.usuarioRepository = usuarioRepository;
         this.relatorioRepository = relatorioRepository;
+
     }
 
     public void salvarUsuario(Usuario usuario) {
@@ -34,11 +39,20 @@ public class UsuarioService {
     }
 
     public List<DadoUsuarioDTO> listarUsuarios() {
-        return usuarioRepository.findAll()
-                .stream()
-                .map(DadoUsuarioDTO::new)
-                .toList();
+
+        List<Usuario> usuarios = usuarioRepository.findAll();
+        List<DadoUsuarioDTO> lista = new ArrayList<>();
+
+        for (Usuario usuario : usuarios) {
+            if (!"farmacia".equals(usuario.getConta().getPermissao())) {
+                lista.add(new DadoUsuarioDTO(usuario));
+            }
+        }
+
+        return lista;
     }
+
+
 
     public DadoUsuarioDTO buscarUsuario(Integer codUsuario) {
         Usuario usuario = usuarioRepository.findById(codUsuario).get();
@@ -59,9 +73,13 @@ public class UsuarioService {
             u.getConta().setSenha(new BCryptPasswordEncoder().encode(usuario.getConta().getSenha()));
         }
 
-        u.getPerfil().setNome(usuario.getPerfil().getNome());
-        u.getPerfil().setSexo(usuario.getPerfil().getSexo());
-        u.getPerfil().setAltura(usuario.getPerfil().getAltura());
+        //não atualiza usuários tipo farmacia
+        if (u.getPerfil() != null && usuario.getPerfil() != null) {
+            u.getPerfil().setNome(usuario.getPerfil().getNome());
+            u.getPerfil().setSexo(usuario.getPerfil().getSexo());
+            u.getPerfil().setAltura(usuario.getPerfil().getAltura());
+
+        }
 
         return usuarioRepository.save(u);
     }

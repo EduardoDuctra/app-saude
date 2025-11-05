@@ -1,9 +1,12 @@
 package br.csi.sistema_saude.controller;
 
+import br.csi.sistema_saude.model.DTO.DadoFarmaciaDTO;
 import br.csi.sistema_saude.model.DTO.DadoUsuarioDTO;
 import br.csi.sistema_saude.model.DTO.IMCDTO;
+import br.csi.sistema_saude.model.Farmacia;
 import br.csi.sistema_saude.model.Relatorio;
 import br.csi.sistema_saude.model.Usuario;
+
 import br.csi.sistema_saude.service.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -31,6 +34,8 @@ import java.util.NoSuchElementException;
 public class UsuarioController {
 
     private UsuarioService usuarioService;
+
+
     public UsuarioController(UsuarioService usuarioService) {
         this.usuarioService = usuarioService;
     }
@@ -53,6 +58,7 @@ public class UsuarioController {
 
         return ResponseEntity.ok(usuarios); // 200
     }
+
 
 
     //URL púlbica
@@ -95,6 +101,8 @@ public class UsuarioController {
 
         return ResponseEntity.ok(new DadoUsuarioDTO(atualizado));
     }
+
+
 
     @DeleteMapping("/deletar")
     @Operation(summary = "Deletar um usuário", description = "Deleta um usuário do banco de dados. Já associado ao Usuário autenticado da sessão")
