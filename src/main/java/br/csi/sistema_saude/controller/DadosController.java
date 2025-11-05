@@ -1,5 +1,6 @@
 package br.csi.sistema_saude.controller;
 
+import br.csi.sistema_saude.model.DTO.DadosDTO;
 import br.csi.sistema_saude.model.Dados;
 import br.csi.sistema_saude.model.Usuario;
 import br.csi.sistema_saude.service.DadosService;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -46,7 +48,7 @@ public class DadosController {
     public ResponseEntity<Dados> buscarDado(@PathVariable Integer codDado) {
 
         Dados dados = this.dadosService.buscarDados(codDado);
-        if(dados == null) {
+        if (dados == null) {
             throw new NoSuchElementException("Dado não encontrado"); //chama o metodo NoSuchElementException da classe Tratador de Error
         }
         return ResponseEntity.ok(dados); //200
@@ -59,7 +61,7 @@ public class DadosController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Dados.class))),
             @ApiResponse(responseCode = "404", description = "Erro ao encontrar dados", content = @Content)
     })
-    public ResponseEntity<List<Dados>> buscarDadosUsuario() {
+    public ResponseEntity<List<DadosDTO>> buscarDadosUsuario() {
 
         //retorno o usuário logado
         //retorno o usuário do BD pelo email
@@ -72,8 +74,22 @@ public class DadosController {
         if (dados.isEmpty()) {
             throw new NoSuchElementException("Usuário não encontrado"); //chama o metodo NoSuchElementException da classe Tratador de Error
         }
-        return ResponseEntity.ok(dados); // 200 OK
+        List<DadosDTO> dadosDTOList = new ArrayList<>();
+        for (Dados d : dados) {
+            DadosDTO dto = new DadosDTO();
+            dto.setCodDado(d.getCodDado());
+            dto.setPeso(d.getPeso());
+            dto.setGlicose(d.getGlicose());
+            dto.setColesterolHDL(d.getColesterolHDL());
+            dto.setColesterolVLDL(d.getColesterolVLDL());
+            dto.setCreatina(d.getCreatina());
+            dto.setTrigliceridio(d.getTrigliceridio());
+            dadosDTOList.add(dto);
+        }
+
+        return ResponseEntity.ok(dadosDTOList);
     }
+
 
 
     @PostMapping("/salvar")

@@ -1,6 +1,6 @@
 package br.csi.sistema_saude.controller;
 
-import br.csi.sistema_saude.model.DTO.DadoUsuario;
+import br.csi.sistema_saude.model.DTO.DadoUsuarioDTO;
 import br.csi.sistema_saude.model.DTO.IMCDTO;
 import br.csi.sistema_saude.model.Relatorio;
 import br.csi.sistema_saude.model.Usuario;
@@ -26,6 +26,7 @@ import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/usuario")
+@CrossOrigin(origins = "http://localhost:4200")
 @Tag(name = "Usuário", description = "Path relacionado aos usuários")
 public class UsuarioController {
 
@@ -43,8 +44,8 @@ public class UsuarioController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Usuario.class))),
             @ApiResponse(responseCode = "404", description = "Erro ao encontrar dados", content = @Content),
     })
-    public ResponseEntity<List<DadoUsuario>> listarUsuarios() {
-        List<DadoUsuario> usuarios = this.usuarioService.listarUsuarios();
+    public ResponseEntity<List<DadoUsuarioDTO>> listarUsuarios() {
+        List<DadoUsuarioDTO> usuarios = this.usuarioService.listarUsuarios();
 
         if (usuarios.isEmpty()) {
             throw new NoSuchElementException("Nenhum usuário encontrado"); // chama o método do Tratador de Error
@@ -63,7 +64,8 @@ public class UsuarioController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Usuario.class))),
             @ApiResponse(responseCode = "400", description = "Erro ao criar usuário", content = @Content)
     })
-    public ResponseEntity salvarUsuario(@RequestBody @Valid Usuario usuario, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<Usuario> salvarUsuario(@RequestBody @Valid Usuario usuario, UriComponentsBuilder uriBuilder) {
+
         this.usuarioService.salvarUsuario(usuario);
         URI uri = uriBuilder.path("/usuario/{codUsuario}").buildAndExpand(usuario.getCodUsuario()).toUri();
         return ResponseEntity.created(uri).body(usuario);
@@ -78,20 +80,20 @@ public class UsuarioController {
             @ApiResponse(responseCode = "400", description = "Erro ao atualizar usuário", content = @Content),
             @ApiResponse(responseCode = "404", description = "Erro ao encontrar dados", content = @Content),
     })
-    public ResponseEntity atualizarUsuario(@RequestBody @Valid Usuario usuario) {
+    public ResponseEntity<DadoUsuarioDTO> atualizarUsuario(@RequestBody @Valid Usuario usuario) {
 
-
-        //retorno o usuário logado
-        //retorno o usuário do BD pelo email
+        // Retorna o usuário logado pelo email
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
-        Usuario logado  = usuarioService.buscarPorEmail(email);
+        Usuario logado = usuarioService.buscarPorEmail(email);
+
 
         usuario.setCodUsuario(logado.getCodUsuario());
 
         Usuario atualizado = usuarioService.atualizarUsuario(usuario);
-        return ResponseEntity.ok(new DadoUsuario(atualizado));
 
+
+        return ResponseEntity.ok(new DadoUsuarioDTO(atualizado));
     }
 
     @DeleteMapping("/deletar")
@@ -153,7 +155,7 @@ public class UsuarioController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Usuario.class))),
             @ApiResponse(responseCode = "404", description = "Erro ao encontrar usuário", content = @Content),
     })
-    public ResponseEntity<DadoUsuario> buscarUsuarioLogado() {
+    public ResponseEntity<DadoUsuarioDTO> buscarUsuarioLogado() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
         Usuario usuario = usuarioService.buscarPorEmail(email);
@@ -162,7 +164,7 @@ public class UsuarioController {
             throw new NoSuchElementException("Usuário não encontrado");
         }
 
-        return ResponseEntity.ok(new DadoUsuario(usuario));
+        return ResponseEntity.ok(new DadoUsuarioDTO(usuario));
     }
 
 }

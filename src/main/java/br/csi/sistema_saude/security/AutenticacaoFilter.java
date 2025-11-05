@@ -35,14 +35,19 @@ public class AutenticacaoFilter extends OncePerRequestFilter {
         System.out.println("TokenJWT: " + tokenJWT);
 
         if (tokenJWT != null) {
+            try {
+                String subject = this.tokenServiceJWT.getSubject(tokenJWT);
+                System.out.println("Login: " + subject);
 
-            String subject = this.tokenServiceJWT.getSubject(tokenJWT);
-            System.out.println("Login: " + subject);
+                UserDetails userDetails = this.autenticacaoService.loadUserByUsername(subject);
+                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
-            UserDetails userDetails = this.autenticacaoService.loadUserByUsername(subject);
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-
-            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+            } catch (RuntimeException e) {
+                System.out.println("Token inválido ou expirado: " + e.getMessage());
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return; // interrompe a requisição
+            }
         }
 
         filterChain.doFilter(request, response);

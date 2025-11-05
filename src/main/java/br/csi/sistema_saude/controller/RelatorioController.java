@@ -1,5 +1,7 @@
 package br.csi.sistema_saude.controller;
 
+import br.csi.sistema_saude.model.DTO.RelatorioCompletoDTO;
+import br.csi.sistema_saude.model.DTO.RelatorioDTO;
 import br.csi.sistema_saude.model.Relatorio;
 import br.csi.sistema_saude.model.RelatorioId;
 import br.csi.sistema_saude.model.Usuario;
@@ -22,11 +24,13 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/relatorios")
+@CrossOrigin(origins = "http://localhost:4200")
 @Tag(name = "Relatórios", description = "Path relacionado aos relatórios")
 public class RelatorioController {
 
@@ -100,6 +104,35 @@ public class RelatorioController {
     }
 
 
+    @GetMapping("/todos-usuario")
+    @Operation(summary = "Listar todos os relatórios do usuário logado",
+            description = "Retorna todos os relatórios completos do usuário autenticado na sessão")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Relatórios retornados com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Não há relatórios para este usuário")
+    })
+    public ResponseEntity<List<RelatorioCompletoDTO>> listarTodosRelatoriosUsuarioLogado() {
+
+        // Pega o usuário logado
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+        Usuario usuario = usuarioService.buscarPorEmail(email);
+
+        if (usuario == null) {
+            return ResponseEntity.status(401).build(); // usuário não autenticado
+        }
+
+        // Busca todos os relatórios do usuário logado
+        List<RelatorioCompletoDTO> relatorios = relatorioService.listarTodosRelatoriosPorUsuario(usuario.getCodUsuario());
+
+        if (relatorios.isEmpty()) {
+            return ResponseEntity.noContent().build(); // 204 se não houver relatórios
+        }
+
+        return ResponseEntity.ok(relatorios); // 200 com lista de DTOs
+    }
+
+
     // Listar relatorio de um tipo de dado especifico
 //    http://localhost:8080/sistema-saude/relatorios/listar-por-tipo?tipoDado=glicose
     @GetMapping("/listar-por-tipo")
@@ -110,23 +143,19 @@ public class RelatorioController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Relatorio.class))),
             @ApiResponse(responseCode = "404", description = "Erro ao encontrar dados", content = @Content),
     })
-    public ResponseEntity<List<Double>> listarTipoDado(
-            @RequestParam String tipoDado) {
-
-        //retorno o usuário logado
-        //retorno o usuário do BD pelo email
+    public ResponseEntity<List<RelatorioDTO>> listarTipoDado(@RequestParam String tipoDado) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
         Usuario usuario = usuarioService.buscarPorEmail(email);
 
-        List<Double> valores = relatorioService.listarValoresPorUsuarioETipo(usuario.getCodUsuario(), tipoDado);
+        List<RelatorioDTO> dtoList = relatorioService.listarRelatoriosPorUsuarioETipo(usuario.getCodUsuario(), tipoDado);
 
-        if (valores.isEmpty()) {
-            throw new NoSuchElementException("Valores vazio"); //chama o metodo NoSuchElementException da classe Tratador de Error
+        if (dtoList.isEmpty()) {
+            throw new NoSuchElementException("Valores vazios");
         }
-        return ResponseEntity.ok(valores); //200
-    }
 
+        return ResponseEntity.ok(dtoList);
+    }
 
     // Excluir um relatório pelo ID composto
     @DeleteMapping("/{codDado}/{data}")

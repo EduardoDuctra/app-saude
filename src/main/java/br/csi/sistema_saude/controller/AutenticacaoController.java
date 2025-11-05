@@ -17,13 +17,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/login")
+@CrossOrigin(origins = "http://localhost:4200")
 @Tag(name = "Segurança", description = "Path relacionado ao login e sergurança/validação")
 public class AutenticacaoController {
 
@@ -47,6 +45,9 @@ public class AutenticacaoController {
     })
     public ResponseEntity efetuarLogin(@RequestBody @Valid DadosAutenticacao dados) {
         try {
+
+            System.out.println("Tentativa de login com email: " + dados.email());
+
             // Cria um token de autenticação do Spring Security com email e senha fornecidos
             // Autentica o usuário usando o AuthenticationManager
             Authentication autenticado = new UsernamePasswordAuthenticationToken(dados.email(), dados.senha());

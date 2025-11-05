@@ -1,6 +1,8 @@
 package br.csi.sistema_saude.service;
 
 
+import br.csi.sistema_saude.model.DTO.RelatorioCompletoDTO;
+import br.csi.sistema_saude.model.DTO.RelatorioDTO;
 import br.csi.sistema_saude.model.Dados;
 import br.csi.sistema_saude.model.Relatorio;
 import br.csi.sistema_saude.model.RelatorioId;
@@ -10,6 +12,7 @@ import br.csi.sistema_saude.repository.RelatorioRepository;
 import br.csi.sistema_saude.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -49,26 +52,62 @@ public class RelatorioService {
         relatorioRepository.deleteById(id);
     }
 
-    public List<Double> listarValoresPorUsuarioETipo(int codUsuario, String tipoDado) {
+    public List<RelatorioCompletoDTO> listarTodosRelatoriosPorUsuario(int codUsuario) {
+        List<Relatorio> relatorios = relatorioRepository.findByUsuario_CodUsuario(codUsuario);
+        List<RelatorioCompletoDTO> dtoList = new ArrayList<>();
+
+        for (Relatorio rel : relatorios) {
+            if (rel.getDados() != null) {
+                RelatorioCompletoDTO dto = new RelatorioCompletoDTO();
+                dto.setData(rel.getId().getData());
+                dto.setPeso(rel.getDados().getPeso());
+                dto.setGlicose(rel.getDados().getGlicose());
+                dto.setColesterolHDL(rel.getDados().getColesterolHDL());
+                dto.setColesterolVLDL(rel.getDados().getColesterolVLDL());
+                dto.setCreatina(rel.getDados().getCreatina());
+                dto.setTrigliceridio(rel.getDados().getTrigliceridio());
+
+                dtoList.add(dto);
+            }
+        }
+
+        return dtoList;
+    }
+
+
+
+    public List<RelatorioDTO> listarRelatoriosPorUsuarioETipo(int codUsuario, String tipoDado) {
         return relatorioRepository.findByUsuario_CodUsuario(codUsuario)
                 .stream()
                 .map(rel -> {
+                    RelatorioDTO dto = new RelatorioDTO();
+
+                    // pega o valor correto de acordo com o tipo
                     switch (tipoDado.toLowerCase()) {
                         case "glicose":
-                            return rel.getDados().getGlicose().doubleValue();
+                            dto.setValor(rel.getDados().getGlicose().doubleValue());
+                            break;
                         case "colesterolhdl":
-                            return rel.getDados().getColesterolHDL().doubleValue();
+                            dto.setValor(rel.getDados().getColesterolHDL().doubleValue());
+                            break;
                         case "colesterolvldl":
-                            return rel.getDados().getColesterolVLDL().doubleValue();
+                            dto.setValor(rel.getDados().getColesterolVLDL().doubleValue());
+                            break;
                         case "peso":
-                            return rel.getDados().getPeso();
+                            dto.setValor(rel.getDados().getPeso());
+                            break;
                         case "creatina":
-                            return rel.getDados().getCreatina().doubleValue();
+                            dto.setValor(rel.getDados().getCreatina().doubleValue());
+                            break;
                         case "trigliceridio":
-                            return rel.getDados().getTrigliceridio().doubleValue();
+                            dto.setValor(rel.getDados().getTrigliceridio().doubleValue());
+                            break;
                         default:
                             throw new NoSuchElementException("Tipo de dado inválido: " + tipoDado);
                     }
+
+                    dto.setData(rel.getId().getData()); // seta a data do relatório
+                    return dto;
                 })
                 .toList();
     }

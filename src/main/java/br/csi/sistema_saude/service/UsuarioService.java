@@ -1,14 +1,12 @@
 package br.csi.sistema_saude.service;
 
-import br.csi.sistema_saude.model.DTO.DadoUsuario;
+import br.csi.sistema_saude.model.DTO.DadoUsuarioDTO;
 import br.csi.sistema_saude.model.DTO.IMCDTO;
 import br.csi.sistema_saude.model.DTO.UsuarioPerfilDTO;
 import br.csi.sistema_saude.model.Relatorio;
 import br.csi.sistema_saude.model.Usuario;
 import br.csi.sistema_saude.repository.RelatorioRepository;
 import br.csi.sistema_saude.repository.UsuarioRepository;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -35,16 +33,16 @@ public class UsuarioService {
         usuarioRepository.save(usuario);
     }
 
-    public List<DadoUsuario> listarUsuarios() {
+    public List<DadoUsuarioDTO> listarUsuarios() {
         return usuarioRepository.findAll()
                 .stream()
-                .map(DadoUsuario::new)
+                .map(DadoUsuarioDTO::new)
                 .toList();
     }
 
-    public DadoUsuario buscarUsuario(Integer codUsuario) {
+    public DadoUsuarioDTO buscarUsuario(Integer codUsuario) {
         Usuario usuario = usuarioRepository.findById(codUsuario).get();
-        return new DadoUsuario(usuario);
+        return new DadoUsuarioDTO(usuario);
     }
 
     public void excluirUsuario(Integer codUsuario) {

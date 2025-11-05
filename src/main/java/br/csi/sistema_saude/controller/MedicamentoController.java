@@ -1,6 +1,7 @@
 package br.csi.sistema_saude.controller;
 
 
+import br.csi.sistema_saude.model.DTO.MedicamentoDTO;
 import br.csi.sistema_saude.model.Medicamento;
 
 import br.csi.sistema_saude.model.Usuario;
@@ -22,11 +23,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/medicamentos")
+@CrossOrigin(origins = "http://localhost:4200")
 @Tag(name = "Mediacamentos", description = "Path relacionado aos medicamentos")
 public class MedicamentoController {
 
@@ -65,7 +68,7 @@ public class MedicamentoController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Medicamento.class))),
             @ApiResponse(responseCode = "404", description = "Erro ao encontrar dados", content = @Content)
     })
-    public ResponseEntity<List<Medicamento>> buscarMedicamentosUsuario() {
+    public ResponseEntity<List<MedicamentoDTO>> buscarMedicamentosUsuario() {
 
         //retorno o usuário logado
         //retorno o usuário do BD pelo email
@@ -75,7 +78,22 @@ public class MedicamentoController {
 
         List<Medicamento> medicamentos = medicamentoService.buscarMedicamentoUsuario(usuario.getCodUsuario());
 
-        return ResponseEntity.ok(medicamentos);
+        List<MedicamentoDTO> medicamentosDTO = new ArrayList<>();
+        for(Medicamento m : medicamentos) {
+            MedicamentoDTO dto = new MedicamentoDTO();
+            if (m.getBancoMedicamentos() != null) {
+                dto.setNomeMedicamento(m.getBancoMedicamentos().getNome());
+            } else {
+                dto.setNomeMedicamento("Indefinido");
+            }
+            dto.setCodMedicamento(m.getCodMedicamento());
+            dto.setDoseDiaria(m.getDoseDiaria());
+            dto.setDataInicio(m.getDataInicio().toString());
+            dto.setDuracaoTratamento(m.getDuracaoTratamento());
+            medicamentosDTO.add(dto);
+        }
+
+        return ResponseEntity.ok(medicamentosDTO);
     }
 
     @PostMapping("/salvar")
