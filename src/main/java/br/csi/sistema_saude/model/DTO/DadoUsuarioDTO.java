@@ -4,12 +4,18 @@ import br.csi.sistema_saude.model.Usuario;
 
 
 
-public record DadoUsuarioDTO(Integer id, String nome, String email, String permissao, Double altura) {
+public record DadoUsuarioDTO(Conta conta, Perfil perfil) {
+    public record Conta(String email, String senha, String permissao) {}
+    public record Perfil(String nome, String sexo, Double altura) {}
+
     public DadoUsuarioDTO(Usuario usuario) {
-        this(usuario.getCodUsuario(),
-                usuario.getPerfil().getNome(),
-                usuario.getConta().getEmail(),
-                usuario.getConta().getPermissao(),
-                usuario.getPerfil().getAltura());
+        this(
+                new Conta(usuario.getConta().getEmail(), "", usuario.getConta().getPermissao()),
+                new Perfil(
+                        usuario.getPerfil().getNome(),
+                        usuario.getPerfil().getSexo().name(),
+                        usuario.getPerfil().getAltura()
+                )
+        );
     }
 }

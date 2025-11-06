@@ -2,6 +2,7 @@ package br.csi.sistema_saude.controller;
 
 
 import br.csi.sistema_saude.model.DTO.DadoFarmaciaDTO;
+import br.csi.sistema_saude.model.DTO.DadoUsuarioDTO;
 import br.csi.sistema_saude.model.Farmacia;
 import br.csi.sistema_saude.model.Sexo;
 import br.csi.sistema_saude.model.Usuario;
@@ -129,4 +130,33 @@ public class FarmaciaController {
         return ResponseEntity.ok(new DadoFarmaciaDTO(atualizada));
     }
 
+    @GetMapping("/perfil")
+    @Operation(summary = "Busca a farmacia logada", description = "Retorna uma farmácia logado, buscando pelo email no banco de dados")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Farmácia encontrada",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Farmacia.class))),
+            @ApiResponse(responseCode = "404", description = "Erro ao encontrar farmácia", content = @Content),
+    })
+    public ResponseEntity<DadoFarmaciaDTO> carregarFarmaciaLogada() {
+
+
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            String email = auth.getName();
+            Usuario logado = usuarioService.buscarPorEmail(email);
+
+
+            Farmacia farmacia = farmaciaService.buscarPorUsuario(logado.getCodUsuario());
+
+            if (farmacia == null) {
+                throw new NoSuchElementException("Usuário não encontrado");
+            }
+
+            DadoFarmaciaDTO dto = new DadoFarmaciaDTO(farmacia);
+            return ResponseEntity.ok(dto);
+
+    }
+
 }
+
+
+

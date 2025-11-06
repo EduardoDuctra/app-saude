@@ -100,3 +100,21 @@
     "altura": 1.80
   }
 }
+
+
+{
+  "usuario": {
+    "perfil": {
+      "nome": "Farmacia A",
+      "sexo": "I",
+      "altura": 0.0
+    },
+    "conta": {
+      "email": "b@b.com",
+      "senha": "123",
+      "permissao": "ROLE_FARMACIA"
+    }
+  },
+  "cnpj": "98.724.432/0121-99",
+  "telefone": "(51) 99999-0002"
+}

@@ -14,6 +14,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+
+
 import java.util.List;
 
 @Configuration
@@ -47,6 +49,7 @@ public class SecurityConfig {
                 }))
 
                 .authorizeHttpRequests(auth -> auth
+
                        // libera Swagger e documentação
                                 .requestMatchers(
                                         "/api-docs/**",
@@ -67,10 +70,10 @@ public class SecurityConfig {
                                 .requestMatchers("/banco-medicamentos/**").hasAuthority("ROLE_ADMIN")
 
                                 // Endpoint /recolhimento → somente ROLE_FARMACIA
-                                .requestMatchers("/recolhimento/**").hasAuthority("farmacia")
+                                .requestMatchers("/recolhimento/**").hasAuthority("ROLE_FARMACIA")
 
                                 .requestMatchers(HttpMethod.GET, "/farmacia/listar-farmacias").hasAuthority("ROLE_ADMIN")
-                                .requestMatchers(HttpMethod.PUT, "/farmacia/atualizar-farmacia").hasAuthority("farmacia")
+                                .requestMatchers(HttpMethod.PUT, "/farmacia/atualizar-farmacia").hasAuthority("ROLE_FARMACIA")
 
                                 // Qualquer outro endpoint exige autenticação
                                 .anyRequest().authenticated()
@@ -90,4 +93,5 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder () {
         return new BCryptPasswordEncoder();
     }
+
 }
