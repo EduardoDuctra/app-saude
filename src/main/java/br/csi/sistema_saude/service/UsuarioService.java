@@ -44,7 +44,7 @@ public class UsuarioService {
         List<DadoUsuarioDTO> lista = new ArrayList<>();
 
         for (Usuario usuario : usuarios) {
-            if (!"farmacia".equals(usuario.getConta().getPermissao())) {
+            if (!"ROLE_FARMACIA".equals(usuario.getConta().getPermissao())) {
                 lista.add(new DadoUsuarioDTO(usuario));
             }
         }
